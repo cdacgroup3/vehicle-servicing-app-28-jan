@@ -1,3 +1,5 @@
+<%@page import="dto.ServiceCenter"%>
+<%@page import="dto.Customer"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 
@@ -35,10 +37,23 @@
 						</li>
 						<% } %>
 						<li class="nav-item">
-							<%  if(session.getAttribute("customer")== null && session.getAttribute("serviceCenter")== null) { %>
+							<%-- <%  if(session.getAttribute("customer")== null && session.getAttribute("serviceCenter")== null) { %>
 							<a class="nav-link h5" href="login.htm">Sign Up/Sign In</a>
 							<% } else { %>
 							<a class="nav-link h5" href="signout.htm">Sign Out</a>
+							<% } %> --%>
+							<%
+								String name;
+							 	if(session.getAttribute("customer")!= null) {
+							 		name = ((Customer)session.getAttribute("customer")).getCustomerName();
+							%>
+							<a class="nav-link h5" href="signout.htm"><%= name %> | Sign Out</a>
+							<% } else if(session.getAttribute("serviceCenter")!= null) {
+									name = ((ServiceCenter)session.getAttribute("serviceCenter")).getServiceCenterName();
+							%>
+							<a class="nav-link h5" href="signout.htm"><%= name %> | Sign Out</a>
+							<% } else { %>
+							<a class="nav-link h5" href="login.htm">Sign Up/Sign In</a>
 							<% } %>
 						</li>
 						<% } %>

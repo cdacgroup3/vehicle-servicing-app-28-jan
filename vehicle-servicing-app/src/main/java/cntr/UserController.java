@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.DispatcherServlet;
 
 import com.google.gson.Gson;
 
@@ -37,7 +36,6 @@ public class UserController {
 	@Autowired
 	private CustomerDao customerDao;
 	
-	DispatcherServlet ds;
 	String referrer;
 	
 	@RequestMapping(value="/home.htm")
@@ -202,8 +200,6 @@ public class UserController {
 		List<String> serviceNameList = bill.getServiceName();
 		List<String> servicePriceList = bill.getServicePrice();
 		
-		System.out.println("bill " + bill);
-		
 		if(serviceNameList.size()>0 && servicePriceList.size()>0) {
 			serviceNameList.remove(0);			
 			servicePriceList.remove(0);		
@@ -218,9 +214,6 @@ public class UserController {
 			}
 		} else {
 			try {
-				/*long mobileNo = ((Customer) session.getAttribute("customer")).getMobileNo();
-				bill.setMobileNo(mobileNo);*/
-				
 				response.sendRedirect(request.getContextPath() + "/pick-service-center.htm");
 			} catch (IOException e) {
 				e.printStackTrace();

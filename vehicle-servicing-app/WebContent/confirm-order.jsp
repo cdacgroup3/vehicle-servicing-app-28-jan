@@ -1,21 +1,31 @@
+<%@page import="dto.CustomerBill"%>
+<%@page import="dao.CustomerDao" %>
+<%@page import="dto.ServiceCenter" %>
+<%@ page import ="java.util.List"%>
+<%@ page import="java.io.*,java.util.*, javax.servlet.*" %>
+<%@ page import ="java.util.Iterator"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="spr"%>
+
+
+
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>CONFIRMATION</title>
-<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-<link rel="stylesheet" href="assets/css/styles.css">
-
-<style>
-        .make-center{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+	<meta charset="ISO-8859-1">
+	<title>CONFIRMATION</title>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/styles.css">
+	<style>
+     .make-center{
+         display: flex;
+         justify-content: center;
+         align-items: center;
+     }
     .invoice-box {
-        max-width: 800px;
+        max-width: 650px;
         margin: auto;
         padding: 30px;
         border: 1px solid #eee;
@@ -107,125 +117,141 @@
     }
     </style>
 </head>
+
 <body>
 	<!-- Header -->
 	<%@ include file="header.jsp"%>
 	
-	<h2>Congrats! Your services have been successfully booked!</h2>
-	<a href="home.htm">GO TO HOME</a>
-	
-	 <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td class="title">
-                                <img src="assets/images/logo.png" style="width:100%; max-width:250px;">
-                            </td>
-                            
-                            <td>
-                                Invoice #: 123<br>
-                                Created: January 1, 2015<br>
-                                Due: February 1, 2015
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <tr class="information">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td>
-                                Sparksuite, Inc.<br>
-                                12345 Sunny Road<br>
-                                Sunnyville, CA 12345
-                            </td>
-                            
-                            <td>
-                                Acme Corp.<br>
-                                John Doe<br>
-                                john@example.com
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <tr class="heading">
-                <td>
-                    Payment Method
-                </td>
-                
-                <td>
-                    Check #
-                </td>
-            </tr>
-            
-            <tr class="details">
-                <td>
-                    Check
-                </td>
-                
-                <td>
-                    1000
-                </td>
-            </tr>
-            
-            <tr class="heading">
-                <td>
-                    Item
-                </td>
-                
-                <td>
-                    Price
-                </td>
-            </tr>
-            
-            <tr class="item">
-                <td>
-                    Website design
-                </td>
-                
-                <td>
-                    $300.00
-                </td>
-            </tr>
-            
-            <tr class="item">
-                <td>
-                    Hosting (3 months)
-                </td>
-                
-                <td>
-                    $75.00
-                </td>
-            </tr>
-            
-            <tr class="item last">
-                <td>
-                    Domain name (1 year)
-                </td>
-                
-                <td>
-                    $10.00
-                </td>
-            </tr>
-            
-            <tr class="total">
-                <td></td>
-                
-                <td>
-                   Total: $385.00
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="make-center">
+	<div class="container-fluid pb-5">	
+		<h2>Congrats! Your services have been successfully booked!</h2>
+		<a href="home.htm">GO TO HOME</a>
+		
+		<%
+			CustomerBill cb = (CustomerBill)session.getAttribute("customerBill");
+			List<String> nameList = null;
+			if(cb!=null) {
+				nameList = cb.getServiceName();
+			} 	
+			ServiceCenter sc = cb.getServiceCenter();
+		%>
+		
+		<%
+		CustomerBill customerBill1 = (CustomerBill) session.getAttribute("customerBill");
+		int billid=customerBill1.getBillId();
+		%>
+				
+		 <div class="invoice-box pv">
+	        <table cellpadding="0" cellspacing="0">
+	            <tr class="top">
+	                <td colspan="2">
+	                    <table>
+	                        <tr>
+	                            <td class="title">
+	                                <img src="assets/images/logo.png" style="width:100%; max-width:250px;">
+	                            </td>                            
+	                            <td>
+	                                Invoice #:<%=billid%><br>
+	                           		<p id="demo"></p>	                                
+	                            </td>
+	                        </tr>
+	                    </table>
+	                </td>
+	            </tr>
+	            
+	            <tr class="information">
+	                <td colspan="2">
+	                    <table>
+	                        <tr>
+	                            <td>
+	                            	<%= sc.getServiceCenterName() %><br>
+	                                <%= sc.getMobileNo() %><br>
+	                                <%= sc.getAddress() %><br>
+	                                <%= sc.getZipcode() %>
+	                            </td>
+	                        </tr>
+	                    </table>
+	                </td>
+	            </tr>
+	            
+	            <tr class="heading">
+	                <td>Payment Method</td>
+	                <td>Cash</td>
+	            </tr>
+	            
+	            <tr class="details">
+	                <td></td>	                
+	                <td></td>
+	            </tr>
+	            
+	            <tr class="heading">
+	                <td>Item</td>
+	                <td>Price</td>
+	            </tr>
+	            
+	        </table>
+	         
+			<div class="service-list">
+				<div class="service-item row" id="service-item-dummy">
+					<span class="service-item-name col-9"></span> 
+					<span class="service-item-price col-3 text-right"></span>
+					<input type="hidden" class="service-item-name" path="serviceName" value="" />
+					<input type="hidden" class="service-item-price" path="servicePrice" value="" />
+				</div>
 
-        <input type="button" value="Print" onclick="window.print()" /> 
-    </div>
+				<%
+					if (session.getAttribute("customerBill") != null) {
+						CustomerBill customerBill = (CustomerBill) session.getAttribute("customerBill");
+						List<String> serviceNameList = customerBill.getServiceName();
+						List<String> servicePriceList = customerBill.getServicePrice();
+						Iterator<String> it1 = serviceNameList.iterator();
+						Iterator<String> it2 = servicePriceList.iterator();
+						while (it1.hasNext() && it2.hasNext()) {
+							String s1 = it1.next();
+							String s2 = it2.next();
+				%>
+				<div class="service-item row" data-id="<%=s1%>">
+					<span class="service-item-name col-9"><%=s1%></span> 
+					<span class="service-item-price col-3 text-right">Rs. <%=s2%></span>
+					<input type="hidden" class="service-item-name" path="serviceName" value="<%=s1%>" />
+					<input type="hidden" class="service-item-price" path="servicePrice" value="<%=s2%>" />
+				</div>
+				<% } %>
+			</div>	           
+	            
+    		<div class="service-total-calc bill-bdr">	
+				<%
+					int total = 0, mktTotal = 0;
+					if (session.getAttribute("customerBill") != null) {
+						total = customerBill.getTotalPrice();
+						mktTotal = customerBill.getMarketPrice();
+					}
+				%>
+				<b>
+				<div class="row">
+					<div class="col-8">
+						<span>Total:</span>
+					</div>
+					<div class="col-4 text-right">		
+					<b>								
+						<span class="text-dark" id="total-price">Rs. <%= total %></span>
+						<input type="hidden" path="totalPrice" value="<%= total %>" />
+					</b>
+					</div>
+				</div>
+				</b>						
+	    	</div>
+	    
+		    <div class="make-center">
+		        <input type="button" value="Print" onclick="window.print()" /> 
+		    </div>						
+			<% } %>		
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var d = new Date();
+		var m= d.getMonth()+ 1;
+		document.getElementById("demo").innerHTML = d.getDate()+"/"+m+"/"+d.getFullYear();
+	</script>
 </body>
 </html>

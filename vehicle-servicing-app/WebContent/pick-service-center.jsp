@@ -16,7 +16,7 @@
 	span {
 		display: block;
 	}
-  .funkyradio label {
+  /* .funkyradio label {
     width: 50%;
     border-radius: 3px;
     border: 2px solid #D1D3D4;
@@ -55,41 +55,73 @@
   .funkyradio-success input[type="checkbox"]:checked ~ label:before {
     color: #fff;
     background-color: #5cb85c;
-  }
+  } */
+  	input[type="radio"]{
+	  display: none;
+	}
+	label { cursor: pointer; }
+  	label:before {
+	  	content: '';
+  	    width: 35px;
+	    height: 35px;
+	    padding: 0 6px 0 8px;
+	    border-radius: 50%;
+	    display: inline-block;
+	    position: absolute;
+	    background-color: #28a745;
+	    cursor: pointer;
+	}
+	input[type="radio"]:checked+label:before {
+	  	content: '\2713';
+	    background-color: #01704f;
+	    color: white;
+	    font-size: 24px;
+	    font-weight: bold;
+	}
+	h4 {
+		padding-top: 3px;
+		margin: 0 0 -3px 45px;
+	}
 </style>
 </head>
 <body>
 	<!-- Header -->
 	<%@ include file="header.jsp"%>
 	
-	<h1>PICK SERVICE CENTER</h1>
-	
-	<spr:form action="confirm-order.htm" commandName="serviceCenterPicked">
-	<div class="funkyradio">
-	<%
-		List<ServiceCenter> serviceCenters = (List<ServiceCenter>) request.getAttribute("serviceCenters");
-		Iterator<ServiceCenter> it = serviceCenters.iterator();
-		while (it.hasNext()) {
-			ServiceCenter sc = it.next();
-	%>
-		<div class="funkyradio-success">
-			<div>		
-				<spr:radiobutton path="mobileNo" value="<%= sc.getMobileNo() %>" id="<%= String.valueOf(sc.getMobileNo()) %>" />
-				<label for="<%= sc.getMobileNo() %>" class="card" >
-				<h3 class="card-header"><%= sc.getServiceCenterName() %></h3>
-				<span>Email: <%= sc.getEmail() %></span>
-				<span>Mobile No: <%= sc.getMobileNo() %></span>
-				<span>Address: <%= sc.getAddress() %></span>
-				<span>Zipcode: <%= sc.getZipcode() %></span>
-			</div>		
+	<div class="container-fluid pb-5">
+		<div class="row">
+			<div class="col-3"></div>
+			<div class="col-6">
+				<h3 class="my-4">PICK SERVICE CENTER</h3>
+				<spr:form action="confirm-order.htm" commandName="serviceCenterPicked">
+					<%
+						List<ServiceCenter> serviceCenters = (List<ServiceCenter>) request.getAttribute("serviceCenters");
+						Iterator<ServiceCenter> it = serviceCenters.iterator();
+						while (it.hasNext()) {
+							ServiceCenter sc = it.next();
+					%>
+					<div class="card mb-4">		
+						<div class="card-header">
+							<spr:radiobutton path="mobileNo" value="<%= sc.getMobileNo() %>" id="<%= String.valueOf(sc.getMobileNo()) %>" />
+						    <label for="<%= String.valueOf(sc.getMobileNo()) %>">
+						    	 <h4><%= sc.getServiceCenterName() %></h4>
+						    </label>
+						 </div>
+						 <div class="card-body">
+							<span>Email: <%= sc.getEmail() %></span>
+							<span>Mobile No: <%= sc.getMobileNo() %></span>
+							<span>Address: <%= sc.getAddress() %></span>
+							<span>Zipcode: <%= sc.getZipcode() %></span>
+						</div>
+					</div>
+					<% } %>
+					<div class="text-center">
+						<button type="submit" class="btn btn-lg btn-success">CONFIRM BOOKING</button>
+					</div>
+				</spr:form>
+			</div>
 		</div>
-	<% } %>
-	
-		<%-- <spr:input type="hidden" path="serviceName" value="<%= ((CustomerBill)request.getAttribute(\"customerBill\")).getServiceName() %>" />
-		<spr:input type="hidden" path="servicePrice" value="<%= ((CustomerBill)request.getAttribute(\"customerBill\")).getServicePrice() %>" />
-		<spr:input type="hidden" path="totalPrice" value="<%= ((CustomerBill)request.getAttribute(\"customerBill\")).getTotalPrice() %>" /> --%>
-		<button type="submit" class="btn">CONFIRM BOOKING</button>
 	</div>
-	</spr:form>
+	
 </body>
 </html>

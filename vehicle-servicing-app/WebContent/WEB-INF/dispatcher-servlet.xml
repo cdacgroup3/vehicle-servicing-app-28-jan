@@ -26,6 +26,7 @@
 		</property>
 		<property name="annotatedClasses">
 			<list>
+				<value>dto.CustomerCar</value>
 				<value>dto.Customer</value>
 				<value>dto.WaitlistedServiceCenter</value>
 				<value>dto.ServiceCenter</value>

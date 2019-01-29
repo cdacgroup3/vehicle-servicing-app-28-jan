@@ -48,6 +48,7 @@ public class CustomerDao {
 			public HashMap<String, List<String>> doInHibernate(Session session) throws HibernateException {
 				Transaction t = session.beginTransaction();
 				HashMap<String, List<String>> carBrandModel = new HashMap<String, List<String>>();
+				
 				List<String> ul = session.createCriteria(CustomerCar.class).setProjection(Projections.distinct(Projections.property("carBrand"))).list();
 				Iterator<String> it = ul.iterator();
 				while(it.hasNext()) {
@@ -147,7 +148,6 @@ public class CustomerDao {
 				Query q = session.createQuery("from Customer where customerName = ?");
 				q.setString(0, customerName);
 				List<Customer> ul = q.list();
-				System.out.println(ul);
 				
 				t.commit();
 				session.flush();
