@@ -1,11 +1,19 @@
 package dao;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -14,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dto.Customer;
 import dto.CustomerBill;
+import dto.CustomerCar;
 import dto.ServiceCenter;
 
 @Repository
@@ -31,6 +40,30 @@ public class CustomerDao {
 
 	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
 		this.hibernateTemplate = hibernateTemplate;
+	}
+	
+	public HashMap<String, List<String>> getCarBrandModel() {
+		HashMap<String, List<String>> list = hibernateTemplate.execute(new HibernateCallback<HashMap<String, List<String>>>() {
+			public HashMap<String, List<String>> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				HashMap<String, List<String>> carBrandModel = new HashMap<String, List<String>>();
+				List<String> ul = session.createCriteria(CustomerCar.class).setProjection(Projections.distinct(Projections.property("carBrand"))).list();
+				Iterator<String> it = ul.iterator();
+				while(it.hasNext()) {
+					String s1 = it.next();
+					String sql = "Select model from car_brand_model WHERE brand=?";
+					Query q = session.createSQLQuery(sql);
+					q.setString(0, s1);
+					List<String> ul2 = q.list();
+					carBrandModel.put(s1, ul2);
+				}
+				t.commit();
+				session.flush();
+				session.close();
+				return carBrandModel;
+			}
+		});
+		return list;
 	}
 	
 	public void createUser(final Customer customer) {
@@ -269,5 +302,43 @@ public class CustomerDao {
 				return null;
 			}
 		});
+	}
+	
+	public List<Number[]> showServiceCenterRevenue() {
+		List<Number[]> list = hibernateTemplate.execute(new HibernateCallback<List<Number[]>>() {
+			public List<Number[]> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();				
+				String sql = "Select service_center_mobile_no from customer_bill WHERE is_paid=1 group by service_center_mobile_no";
+				Query q = session.createSQLQuery(sql);
+				List<BigInteger> ul1 = q.list(); 
+				
+				sql = "Select count(*) from customer_bill WHERE is_paid=1 group by service_center_mobile_no";
+				q = session.createSQLQuery(sql);
+				List<BigInteger> ul2  = q.list(); 
+				
+				sql = "Select sum(total_price) from customer_bill WHERE is_paid=1 group by service_center_mobile_no";
+				q = session.createSQLQuery(sql);
+				List<BigDecimal> ul3  = q.list(); 
+				
+				Iterator<BigInteger> it1 = ul1.iterator();
+				Iterator<BigInteger> it2 = ul2.iterator();
+				Iterator<BigDecimal> it3 = ul3.iterator();
+				
+				List<Number[]> ul = new ArrayList<Number[]>();
+				while(it1.hasNext() && it2.hasNext() && it3.hasNext()) {
+					Number[] bi = new Number[3];
+					bi[0] = (Number)it1.next();
+					bi[1] = (Number)it2.next();
+					bi[2] = (Number)it3.next();
+					ul.add(bi);
+				}
+				
+				t.commit();
+				session.flush();
+				session.close();
+				return ul;
+			}
+		});
+		return list;
 	}
 }

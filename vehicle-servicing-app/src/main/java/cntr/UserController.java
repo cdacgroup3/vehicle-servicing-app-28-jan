@@ -1,6 +1,7 @@
 package cntr;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -16,8 +17,12 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import com.google.gson.Gson;
 
 import dao.CustomerDao;
 import dto.Customer;
@@ -35,7 +40,10 @@ public class UserController {
 	String referrer;
 	
 	@RequestMapping(value="/home.htm")
-	public String selectCarModel(ModelMap model, HttpServletRequest request) {	
+	public String selectCarModel(ModelMap model, HttpServletRequest request, HttpSession session) {	
+		if(session.getAttribute("admin")!=null) {
+			model.put("revenue", customerDao.showServiceCenterRevenue());
+		} 
 		model.put("customerCar", new CustomerCar());
 		return "index";
 	}
@@ -50,21 +58,32 @@ public class UserController {
 	
 	@RequestMapping(value="/login-check.htm")
 	public String login(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		List<Customer> list = customerDao.login(customer);
-		if(list.isEmpty()) {
-			model.put("customer", new Customer());
-			model.put("serviceCenter", new ServiceCenter());
-			return "login-form";
-		} else {
+		if(customer.getCustomerName().equals("admin") && customer.getPassword().equals("carkey91")) {	
 			session = request.getSession();
-			session.setAttribute("customer", customer);		
+			session.setAttribute("admin", customer);
 			try {
-				response.sendRedirect(referrer);
+				response.sendRedirect(request.getContextPath() + "/home.htm");
 			} catch (IOException e) {
 				e.printStackTrace();
-			}		
-			return null;
-		}
+			}
+		} else {		
+			List<Customer> list = customerDao.login(customer);
+			if(list.isEmpty()) {
+				model.put("customer", new Customer());
+				model.put("serviceCenter", new ServiceCenter());
+				return "login-form";
+			} else {
+				session = request.getSession();
+				session.setAttribute("customer", customer);		
+				try {
+					response.sendRedirect(referrer);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}		
+				return null;
+			}
+		}		
+		return null;
 	}
 	
 	@RequestMapping(value="/center-login-check.htm")
@@ -288,5 +307,23 @@ public class UserController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value="/brandmodeltable.htm")
+	@ResponseBody
+	public String getCarBrandModel() {
+		HashMap<String, List<String>> brandModelList = customerDao.getCarBrandModel();
+		Gson gson = new Gson(); 
+		String json = gson.toJson(brandModelList); 
+		return json;
+	}
+	
+	@RequestMapping(value="/service-center-history-table.htm")
+	@ResponseBody
+	public String getServiceCenterDetails(@RequestParam("id") String sc_id) {
+		List<CustomerBill> serviceCenterOrderHistory = customerDao.getServiceCenterOrderHistory(Long.parseLong(sc_id));
+		Gson gson = new Gson(); 
+		String json = gson.toJson(serviceCenterOrderHistory); 
+		return json;
 	}
 }

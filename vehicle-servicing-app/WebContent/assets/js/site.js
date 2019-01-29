@@ -88,123 +88,97 @@ $(document).ready(function() {
 		let saved = Number(marketsum) - Number(sum);
 		$(".service-total-calc").find("#save-price")[0].innerHTML="Rs. " + saved;		
 	});
-	
-	//var carBrandModel = { Honda:["Accent(Diesel)", "Accent(Petrol)"], Hyundai:["Accent(D)", "Accent(P)"] };
-	
-	var carBrandModel = { Honda:["Accent(Diesel)", "Accent(Petrol)","Accord (Petrol)","Amaze (Diesel)",
-		"Amaze (Petrol)","Brio (Petrol)","CR V (Petrol)","CRV (Diesel)","City (Diesel)","City (Petrol)",
-		"Civic (Petrol)","Jazz (Diesel)","Jazz (Petrol)","Mobilio (Diesel)","Mobilio (Petrol)"], 
-		Hyundai:["Accent (Diesel)","Accent (Petrol)","Creta (Diesel)","Creta (Petrol)","Elantra (Diesel)",
-			"Elantra (Petrol)","Elite i10 (Diesel)","Elite i10 (Petrol)","Eon (Petrol)","Eon (LPG)",
-			"Getz (Petrol)","Grand i10 (Diesel)","Grand i10 (LPG)","Grand i10 (Petrol)","Grand i10 (CNG)"],
-		"Maruti Suzuki":["800 MPFI (Petrol)","800 Non MPFI (Petrol)",">A Star (Petrol)","Alto (Petrol)",
-			"Alto 800 (Petrol)","Alto 800 (CNG)","Alto k10 (Petrol)","Alto k10 (CNG)","Baleno (Diesel)",
-			"Baleno (Petrol)","Celerio (Petrol)","Celerio (Diesel)","Celerio (CNG)","Ciaz (Diesel)",
-			"Ciaz (Petrol)","Eeco (CNG)","Eeco (Petrol)","Ertiga (Diesel)","Ertiga (Petrol)","Ertiga (CNG)",
-			"Esteem (Petrol)","Grand Vitara (Petrol)","Grand Vitara Brezza (Diesel)","Gypsy (Petrol)",
-			"Kizashi (Petrol)","Omni (Petrol)"],	
-		Toyota:["Camry (Petrol)","Corolla (Petrol)","Corolla Altis (Petrol)","Corolla Altis (Diesel)",
-			"Etios (Diesel)","Etios (Petrol)","Etios Cross (Diesel)","Etios Cross (Petrol)","Etios Liva (Petrol)",
-			"Etios Liva (Diesel)","Fortuner (Diesel)","Innova (Diesel)","Innova (Petrol)",
-			"Land Cruiser 200(Diesel)","Land Cruiser prade (Diesel)","Prius (Petrol)","Qualis (Diesel)",
-			"Qualis (Petrol)"],
-		Ford:["Classic (Petrol)","Classic (Diesel)","Ecosport (Petrol)", "Ecosport (Diesel)","Endeavour (Diesel)",
-			"Escort (Petrol)","Fiesta (Petrol)","Figo Aspire (Petrol)","Fusion (Petrol)","Fusion (Diesel)",
-			"Ikon (Petrol)"],
-		Fiat:["Abarth Avventura (Petrol)","Abarth Punto (Petrol)","Avventura (Diesel)","Avventura (Petrol)",
-				"Linea (Diesel)","Linea (Petrol)","Linea Classic (Diesel)","Linea Classic (Petrol)",
-				"Palio (Diesel)","Palio (Petrol)","Palio Adventure (Petrol)","Punto EVO (Petrol)",
-				"Punto EVO (Diesel)","Punto Pure (Petrol)","Punto Pure (Diesel)","Siena (Diesel)","Siena (Petrol)",
-				"Uno (Diesel)","Uno (Petrol)"]};
-	
-	
-	
-	$('#carBrand').on('change', function() {
-		$('#carModel').find('option').remove();
-		var carModel = carBrandModel[this.value];
-		$.each(carModel, function(index, value) {
-			 var itemval= '<option value="' + value + '">' + value + '</option>';
-			 $("#carModel").append(itemval);
-		});
-	});
-	
-	
 });
 
-function SolidCost(){
-    document.getElementById("cc1").innerHTML = "2700/-";
-    document.getElementById("m1").innerHTML = "3510/-";
+function SolidCost(elem){
+	$('.dent-paint-options').find('button').removeClass('btn-dark').addClass('btn-secondary');
+	$(elem).removeClass('btn-secondary').addClass('btn-dark');
+    document.getElementById("cp1").innerHTML = "2100";
+    document.getElementById("mp1").innerHTML = "Rs. 2700";
 
-    document.getElementById("cc2").innerHTML = "2700/-";
-    document.getElementById("m2").innerHTML = "3100/-";
+    document.getElementById("cp2").innerHTML = "2000";
+    document.getElementById("mp2").innerHTML = "Rs. 2600";
 
-    document.getElementById("cc3").innerHTML = "2100/-";
-    document.getElementById("m3").innerHTML = "2730/-";
+    document.getElementById("cp3").innerHTML = "2100";
+    document.getElementById("mp3").innerHTML = "Rs. 2700";
 
-    document.getElementById("cc4").innerHTML = "2100/-";
-    document.getElementById("m4").innerHTML = "2730/-";
+    document.getElementById("cp4").innerHTML = "2100";
+    document.getElementById("mp4").innerHTML = "Rs. 2700";
 
-    document.getElementById("cc5").innerHTML = "2900/-";
-    document.getElementById("m5").innerHTML = "3770/-";
+    document.getElementById("cp5").innerHTML = "2000";
+    document.getElementById("mp5").innerHTML = "Rs. 2600";
 
-    document.getElementById("cc6").innerHTML = "2900/-";
-    document.getElementById("m6").innerHTML = "3770/-";
+    document.getElementById("cp6").innerHTML = "2300";
+    document.getElementById("mp6").innerHTML = "Rs. 2990";
     
-    document.getElementById("cc7").innerHTML = "2700/-";
-    document.getElementById("m7").innerHTML = " 3510/-";
+    document.getElementById("cp7").innerHTML = "2300";
+    document.getElementById("mp7").innerHTML = "Rs. 2990";
 
-    document.getElementById("cc8").innerHTML = "41000/-";
-    document.getElementById("m8").innerHTML = "53300/-";
+    document.getElementById("cp8").innerHTML = "2100";
+    document.getElementById("mp8").innerHTML = "Rs. 2700";
+
+    document.getElementById("cp8").innerHTML = "33000";
+    document.getElementById("mp8").innerHTML = "Rs. 42500";
 }
 
-function MetallicCost(){
-    document.getElementById("cc1").innerHTML = "2900/-";
-    document.getElementById("m1").innerHTML = "3770/-";
+function MetallicCost(elem){
+	$('.dent-paint-options').find('button').removeClass('btn-dark').addClass('btn-secondary');
+	$(elem).removeClass('btn-secondary').addClass('btn-dark');
+    document.getElementById("cp1").innerHTML = "2900";
+    document.getElementById("mp1").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc2").innerHTML = "2900/-";
-    document.getElementById("m2").innerHTML = " 3770/-";
+    document.getElementById("cp2").innerHTML = "2900";
+    document.getElementById("mp2").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc3").innerHTML = "2200/-";
-    document.getElementById("m3").innerHTML = "2860/-";
+    document.getElementById("cp3").innerHTML = "2200";
+    document.getElementById("mp3").innerHTML = "Rs. 2860";
 
-    document.getElementById("cc4").innerHTML = "2200/-";
-    document.getElementById("m4").innerHTML = "2860/-";
+    document.getElementById("cp4").innerHTML = "2200";
+    document.getElementById("mp4").innerHTML = "Rs. 2860";
 
-    document.getElementById("cc5").innerHTML = "3000/-";
-    document.getElementById("m5").innerHTML = "3900/-";
+    document.getElementById("cp5").innerHTML = "3000";
+    document.getElementById("mp5").innerHTML = "Rs. 3900";
 
-    document.getElementById("cc6").innerHTML = "3000/-";
-    document.getElementById("m6").innerHTML = "3900/-";
+    document.getElementById("cp6").innerHTML = "3000";
+    document.getElementById("mp6").innerHTML = "Rs. 3900";
     
-    document.getElementById("cc7").innerHTML = "2900/-";
-    document.getElementById("m7").innerHTML = "3770/-";
+    document.getElementById("cp7").innerHTML = "2900";
+    document.getElementById("mp7").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc8").innerHTML = "44000/-";
-    document.getElementById("m8").innerHTML = "57200/-";
+    document.getElementById("cp8").innerHTML = "2200";
+    document.getElementById("mp8").innerHTML = "Rs. 2860";
+
+    document.getElementById("cp9").innerHTML = "44000";
+    document.getElementById("mp9").innerHTML = "Rs. 57200";
 }
 
-function PearlCost(){
-    document.getElementById("cc1").innerHTML = "2900/-";
-    document.getElementById("m1").innerHTML = "3770/-";
+function PearlCost(elem){
+	$('.dent-paint-options').find('button').removeClass('btn-dark').addClass('btn-secondary');
+	$(elem).removeClass('btn-secondary').addClass('btn-dark');
+	document.getElementById("cp1").innerHTML = "2900";
+    document.getElementById("mp1").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc2").innerHTML = "2900/-";
-    document.getElementById("m2").innerHTML = " 3770/-";
+    document.getElementById("cp2").innerHTML = "2900";
+    document.getElementById("mp2").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc3").innerHTML = "2200/-";
-    document.getElementById("m3").innerHTML = "2860/-";
+    document.getElementById("cp3").innerHTML = "2200";
+    document.getElementById("mp3").innerHTML = "Rs. 2860";
 
-    document.getElementById("cc4").innerHTML = "2200/-";
-    document.getElementById("m4").innerHTML = "2860/-";
+    document.getElementById("cp4").innerHTML = "2200";
+    document.getElementById("mp4").innerHTML = "Rs. 2860";
 
-    document.getElementById("cc5").innerHTML = "3000/-";
-    document.getElementById("m5").innerHTML = "3900/-";
+    document.getElementById("cp5").innerHTML = "3000";
+    document.getElementById("mp5").innerHTML = "Rs. 3900";
 
-    document.getElementById("cc6").innerHTML = "3000/-";
-    document.getElementById("m6").innerHTML = "3900/-";
+    document.getElementById("cp6").innerHTML = "3000";
+    document.getElementById("mp6").innerHTML = "Rs. 3900";
     
-    document.getElementById("cc7").innerHTML = "2900/-";
-    document.getElementById("m7").innerHTML = "3770/-";
+    document.getElementById("cp7").innerHTML = "2900";
+    document.getElementById("mp7").innerHTML = "Rs. 3770";
 
-    document.getElementById("cc8").innerHTML = "44000/-";
-    document.getElementById("m8").innerHTML = "57200/-";
+    document.getElementById("cp8").innerHTML = "2200";
+    document.getElementById("mp8").innerHTML = "Rs. 2860";
+
+    document.getElementById("cp9").innerHTML = "44000";
+    document.getElementById("mp9").innerHTML = "Rs. 57200";
 }

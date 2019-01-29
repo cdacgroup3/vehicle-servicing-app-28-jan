@@ -15,6 +15,7 @@
 	<%@ include file="header.jsp"%>
 
 	<!-- Body -->
+	<% if(session.getAttribute("admin")==null) { %>
 	<div class="main container-fluid">
 		<div class="row">
 			<div class="banner-box col-12 w-100">
@@ -164,8 +165,29 @@
 			</div>
 		</div>
 	</div>
+	<% } else { %>
+		<%@ include file="account-admin.jsp"%>
+	<% } %>
 	
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/site.js"></script>
+	<script>	
+		let carBrandModel = {};
+		$.ajax({
+			url: "../vehicle-servicing-app/brandmodeltable.htm", 
+			success: function(result) {
+				carBrandModel = $.parseJSON(result);
+			}
+		});
+
+		$('#carBrand').on('change', function() {
+			$('#carModel').find('option').remove();
+			var carModel = carBrandModel[this.value];
+			$.each(carModel, function(index, value) {
+				 var itemval= '<option value="' + value + '">' + value + '</option>';
+				 $("#carModel").append(itemval);
+			});
+		});
+	</script>
 </body>
 </html>

@@ -9,6 +9,11 @@
 				</a>
 				<div class="navbar-collapse justify-content-end">
 					<ul class="navbar-nav">
+						<% if(session.getAttribute("admin")!=null) { %>
+						<li class="nav-item">
+							<a class="nav-link h5" href="signout.htm">Sign Out</a>
+						</li>
+						<%  } else { %>
 						<li class="nav-item">
 							<a class="nav-link h5 mr-10" href="home.htm#why-us">Why Us?</a>
 						</li>
@@ -33,6 +38,7 @@
 							<a class="nav-link h5" href="signout.htm">Sign Out</a>
 							<% } %>
 						</li>
+						<% } %>
 					</ul>
 				</div>
 				
