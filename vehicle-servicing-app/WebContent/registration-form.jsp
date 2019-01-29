@@ -82,7 +82,6 @@ textarea.invalid {
 			<div class="col-4"></div>
 			<div class="col-4">		
 				<%
-					System.out.println("" + request.getAttribute("register-status"));
 					if(request.getAttribute("register-status") != null) {
 				%>
 						<h6 class="text-center text-success mb-3"><%= request.getAttribute("register-status") %></h6>

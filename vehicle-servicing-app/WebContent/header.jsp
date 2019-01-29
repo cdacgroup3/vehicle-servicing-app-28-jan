@@ -11,6 +11,9 @@
 					<ul class="navbar-nav">
 						<% if(session.getAttribute("admin")!=null) { %>
 						<li class="nav-item">
+							<a class="nav-link h5" href="pending-center.htm">Approve Service Centers</a>
+						</li>
+						<li class="nav-item">
 							<a class="nav-link h5" href="signout.htm">Sign Out</a>
 						</li>
 						<%  } else { %>

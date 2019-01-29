@@ -27,6 +27,7 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>dto.Customer</value>
+				<value>dto.WaitlistedServiceCenter</value>
 				<value>dto.ServiceCenter</value>
 				<value>dto.CustomerBill</value>
 			</list>

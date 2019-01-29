@@ -29,6 +29,7 @@ import dto.Customer;
 import dto.CustomerBill;
 import dto.CustomerCar;
 import dto.ServiceCenter;
+import dto.WaitlistedServiceCenter;
 
 @Controller
 @SessionAttributes({"customerCar", "serviceType"})
@@ -121,7 +122,7 @@ public class UserController {
 	@RequestMapping(value="/registration.htm")
 	public String prepareRegistrationForm(ModelMap model) {
 		model.put("customer", new Customer());
-		model.put("serviceCenter", new ServiceCenter());
+		model.put("serviceCenter", new WaitlistedServiceCenter());
 		return "registration-form";
 	}
 	
@@ -130,16 +131,16 @@ public class UserController {
 		customerDao.createUser(customer);	
 		model.put("register-status", "Your registration was successful!");		
 		model.put("customer", new Customer());
-		model.put("serviceCenter", new ServiceCenter());
+		model.put("serviceCenter", new WaitlistedServiceCenter());
 		return "registration-form";
 	}
 	
 	@RequestMapping(value="/performServiceCenterRegistration.htm")
-	public String performServiceCenterRegistration(ServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public String performServiceCenterRegistration(WaitlistedServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		customerDao.createServiceCenter(serviceCenter);
 		model.put("register-status", "Your registration was successful!");
 		model.put("customer", new Customer());
-		model.put("serviceCenter", new ServiceCenter());
+		model.put("serviceCenter", new WaitlistedServiceCenter());
 		return "registration-form";
 	}
 	
@@ -298,10 +299,8 @@ public class UserController {
 	
 	@RequestMapping(value="/approve-payment.htm")
 	public void approvePayment(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println(request.getParameter("billId"));
 		int billId = Integer.parseInt(request.getParameter("billId"));
-		customerDao.updateBillPayment(billId);
-		
+		customerDao.updateBillPayment(billId);		
 		try {
 			response.sendRedirect(request.getContextPath() + "/account.htm");
 		} catch (IOException e) {
@@ -325,5 +324,38 @@ public class UserController {
 		Gson gson = new Gson(); 
 		String json = gson.toJson(serviceCenterOrderHistory); 
 		return json;
+	}
+	
+	@RequestMapping(value="/pending-center.htm")
+	public String getPendingCenters(ModelMap model) {
+		List<WaitlistedServiceCenter> serviceCenters = customerDao.showPendingServiceCenter();
+		model.put("waitlisted", serviceCenters);
+		return "account-admin-pending-center";
+	}
+	
+	@RequestMapping(value="/approve-center.htm")
+	public void approveCenter(HttpServletRequest request, HttpServletResponse response) {
+		Long centerId = Long.parseLong(request.getParameter("centerId"));
+		List<WaitlistedServiceCenter> waitlistedCenterList = customerDao.showWaitlistedCenterByMobileNo(centerId);
+		WaitlistedServiceCenter waitlistedCenter = waitlistedCenterList.get(0);
+		customerDao.addServiceCenter(waitlistedCenter);		
+		try {
+			response.sendRedirect(request.getContextPath() + "/pending-center.htm");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/deny-center.htm")
+	public void denyCenter(HttpServletRequest request, HttpServletResponse response) {
+		Long centerId = Long.parseLong(request.getParameter("centerId"));
+		List<WaitlistedServiceCenter> waitlistedCenterList = customerDao.showWaitlistedCenterByMobileNo(centerId);
+		WaitlistedServiceCenter waitlistedCenter = waitlistedCenterList.get(0);
+		customerDao.deleteServiceCenter(waitlistedCenter);		
+		try {
+			response.sendRedirect(request.getContextPath() + "/pending-center.htm");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

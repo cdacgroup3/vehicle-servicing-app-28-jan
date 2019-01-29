@@ -24,6 +24,7 @@ import dto.Customer;
 import dto.CustomerBill;
 import dto.CustomerCar;
 import dto.ServiceCenter;
+import dto.WaitlistedServiceCenter;
 
 @Repository
 public class CustomerDao {
@@ -79,7 +80,7 @@ public class CustomerDao {
 		});
 	}
 	
-	public void createServiceCenter(final ServiceCenter serviceCenter) {
+	public void createServiceCenter(final WaitlistedServiceCenter serviceCenter) {
 		hibernateTemplate.execute(new HibernateCallback<List<ServiceCenter>>() {
 			public List<ServiceCenter> doInHibernate(Session session) throws HibernateException {
 				Transaction t = session.beginTransaction();
@@ -340,5 +341,75 @@ public class CustomerDao {
 			}
 		});
 		return list;
+	}
+	
+	public List<WaitlistedServiceCenter> showPendingServiceCenter() {
+		List<WaitlistedServiceCenter> list = hibernateTemplate.execute(new HibernateCallback<List<WaitlistedServiceCenter>>() {
+			public List<WaitlistedServiceCenter> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				Query q = session.createQuery("from WaitlistedServiceCenter");
+				List<WaitlistedServiceCenter> ul = q.list();
+				t.commit();
+				session.flush();
+				session.close();
+				return ul;
+			}
+		});
+		return list;
+	}
+	
+	public List<WaitlistedServiceCenter> showWaitlistedCenterByMobileNo(Long serviceCenterMobileNo) {
+		List<WaitlistedServiceCenter> list = hibernateTemplate.execute(new HibernateCallback<List<WaitlistedServiceCenter>>() {
+			public List<WaitlistedServiceCenter> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				Query q = session.createQuery("from WaitlistedServiceCenter where mobileNo = ?");
+				q.setLong(0, serviceCenterMobileNo);
+				List<WaitlistedServiceCenter> ul = q.list();
+				
+				t.commit();
+				session.flush();
+				session.close();
+				return ul;
+			}
+		});
+		return list;
+	}
+	
+	public void addServiceCenter(WaitlistedServiceCenter waitlistedCenter) {
+		hibernateTemplate.execute(new HibernateCallback<List<WaitlistedServiceCenter>>() {
+			public List<WaitlistedServiceCenter> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				String sql = "Insert into service_center values(?, ?, ?, ?, ?, ?, ?)";
+			    Query q = session.createSQLQuery(sql);
+				q.setLong(0, waitlistedCenter.getMobileNo());
+				q.setString(1, waitlistedCenter.getAddress());
+				q.setString(2, waitlistedCenter.getEmail());
+				q.setString(3, waitlistedCenter.getPassword());
+				q.setString(4, waitlistedCenter.getServiceCenterName());
+				q.setInteger(5, waitlistedCenter.getSlot());
+				q.setInteger(6, waitlistedCenter.getZipcode());
+				q.executeUpdate();
+								
+				session.delete(waitlistedCenter);
+				
+				t.commit();
+				session.flush();
+				session.close();
+				return null;
+			}
+		});
+	}
+	
+	public void deleteServiceCenter(WaitlistedServiceCenter waitlistedCenter) {
+		hibernateTemplate.execute(new HibernateCallback<List<WaitlistedServiceCenter>>() {
+			public List<WaitlistedServiceCenter> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				session.delete(waitlistedCenter);				
+				t.commit();
+				session.flush();
+				session.close();
+				return null;
+			}
+		});
 	}
 }
