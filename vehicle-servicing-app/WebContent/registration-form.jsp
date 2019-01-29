@@ -80,121 +80,107 @@ textarea.invalid {
 		
 		<div class="row mt-3 register-form">
 			<div class="col-4"></div>
-			<div class="col-4 bg">				
+			<div class="col-4">		
 				<%
 					System.out.println("" + request.getAttribute("register-status"));
 					if(request.getAttribute("register-status") != null) {
 				%>
-						<div><%= request.getAttribute("register-status") %></div>
+						<h6 class="text-center text-success mb-3"><%= request.getAttribute("register-status") %></h6>
 				<% 
 					}
-				%>
+				%>					
+				<div class="bg">			
+					<h4 class="text-center mb-3">REGISTER</h4>
+					
+					<!-- User Registration Form -->
+					<spr:form action="performRegistration.htm" commandName="customer" id="customer-register-form">
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="customerName"
+								id="customer-name" placeholder="Enter name" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="mobileNo"
+								id="mobile-no" placeholder="Enter mobile no" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="password" class="form-control" path="password"
+								id="password" placeholder="Enter password" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="email" class="form-control" path="email"
+								id="email" placeholder="Enter email id" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="zipcode"
+								id="zipcode" placeholder="Enter zipcode" />
+						</div>
+	
+						<div class="form-group">
+							<spr:textarea rows="3" class="form-control" path="address"
+								id="address" placeholder="Enter address"></spr:textarea>
+						</div>
+	
+						<div class="text-center">
+							<button type="submit" class="btn btn-success text-light mr-3"
+								id="customerRegisterBtn">Register</button>
+							<button type="button" class="btn">Cancel</button>
+						</div>
+					</spr:form>			
 				
-			
-				<h4 class="text-center mb-3">REGISTER</h4>
-				
-				<!-- User Registration Form -->
-				<spr:form action="performRegistration.htm" commandName="customer" id="customer-register-form">
-					<div class="form-group">
-						<spr:input type="text" class="form-control" path="customerName"
-							id="customer-name" placeholder="Enter name" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="text" class="form-control" path="mobileNo"
-							id="mobile-no" placeholder="Enter mobile no" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="password" class="form-control" path="password"
-							id="password" placeholder="Enter password" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="email" class="form-control" path="email"
-							id="email" placeholder="Enter email id" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="text" class="form-control" path="zipcode"
-							id="zipcode" placeholder="Enter zipcode" />
-					</div>
-
-					<div class="form-group">
-						<spr:textarea rows="3" class="form-control" path="address"
-							id="address" placeholder="Enter address"></spr:textarea>
-					</div>
-
-					<div class="text-center">
-						<button type="submit" class="btn btn-success text-light mr-3"
-							id="customerRegisterBtn">Register</button>
-						<button type="button" class="btn">Cancel</button>
-					</div>
-				</spr:form>			
-			
-				<!-- Service Center Registration Form -->
-				<spr:form action="performServiceCenterRegistration.htm" commandName="serviceCenter" id="center-register-form" class="d-none">
-					<div class="form-group">
-						<spr:input type="text" class="form-control"
-							path="serviceCenterName" id="center-name"
-							placeholder="Enter name" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="text" class="form-control" path="mobileNo"
-							id="center-mobile-no" placeholder="Enter mobile no" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="password" class="form-control" path="password"
-							id="center-password" placeholder="Enter password" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="email" class="form-control" path="email"
-							id="center-email" placeholder="Enter email id" />
-					</div>
-
-					<div class="form-group">
-						<spr:textarea rows="3" class="form-control" path="address"
-							id="center-address" placeholder="Enter address"></spr:textarea>
-					</div>
-
-
-					<div class="form-group">
-						<spr:input type="number" class="form-control" path="zipcode"
-							id="center-zipcode" placeholder="Enter zipcode" />
-					</div>
-
-					<div class="form-group">
-						<spr:input type="text" class="form-control" path="slot" id="slot"
-							placeholder="Enter number of slots" />
-					</div>
-
-					<div class="text-center">
-						<button type="submit" class="btn btn-success text-light mr-3"
-							id="centerRegisterBtn">Register</button>
-						<button type="button" class="btn">Cancel</button>
-					</div>
-				</spr:form>
-				
+					<!-- Service Center Registration Form -->
+					<spr:form action="performServiceCenterRegistration.htm" commandName="serviceCenter" id="center-register-form" class="d-none">
+						<div class="form-group">
+							<spr:input type="text" class="form-control"
+								path="serviceCenterName" id="center-name"
+								placeholder="Enter name" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="mobileNo"
+								id="center-mobile-no" placeholder="Enter mobile no" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="password" class="form-control" path="password"
+								id="center-password" placeholder="Enter password" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="email" class="form-control" path="email"
+								id="center-email" placeholder="Enter email id" />
+						</div>
+	
+						<div class="form-group">
+							<spr:textarea rows="3" class="form-control" path="address"
+								id="center-address" placeholder="Enter address"></spr:textarea>
+						</div>
+	
+	
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="zipcode"
+								id="center-zipcode" placeholder="Enter zipcode" />
+						</div>
+	
+						<div class="form-group">
+							<spr:input type="text" class="form-control" path="slot" id="slot"
+								placeholder="Enter number of slots" />
+						</div>
+	
+						<div class="text-center">
+							<button type="submit" class="btn btn-success text-light mr-3"
+								id="centerRegisterBtn">Register</button>
+							<button type="button" class="btn">Cancel</button>
+						</div>
+					</spr:form>
+				</div>	
 			</div>
 			<div class="col-4"></div>
 		</div>
-
-		
-		<!-- <div class="row mt-3 register-form d-none">
-			<div class="col-4"></div>
-			<div class="col-4 bg">
-				<h4 class="text-center mb-3">REGISTER</h4>
-				
-			</div>
-
-			<div class="col-4"></div>
-		</div> -->
 	</div>
-
-
 
 	<script src="assets/js/jquery.min.js"></script>
 	<script>

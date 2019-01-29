@@ -1,8 +1,10 @@
 package dto;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="car_brand_model")
 public class CustomerCar {
 	private String carBrand;
 	private String carModel;

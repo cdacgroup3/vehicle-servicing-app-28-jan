@@ -3,6 +3,8 @@ package cntr;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -105,25 +107,21 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/performRegistration.htm")
-	public void performRegistration(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public String performRegistration(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		customerDao.createUser(customer);	
-		model.put("register-status", "Your registration was successful!");
-		try {
-			response.sendRedirect(request.getContextPath() + "/registration.htm");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		model.put("register-status", "Your registration was successful!");		
+		model.put("customer", new Customer());
+		model.put("serviceCenter", new ServiceCenter());
+		return "registration-form";
 	}
 	
 	@RequestMapping(value="/performServiceCenterRegistration.htm")
-	public void performServiceCenterRegistration(ServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public String performServiceCenterRegistration(ServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		customerDao.createServiceCenter(serviceCenter);
 		model.put("register-status", "Your registration was successful!");
-		try {
-			response.sendRedirect(request.getContextPath() + "/registration.htm");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		model.put("customer", new Customer());
+		model.put("serviceCenter", new ServiceCenter());
+		return "registration-form";
 	}
 	
 	
@@ -270,7 +268,7 @@ public class UserController {
 			List<CustomerBill> serviceCenterOrders = customerDao.getServiceCenterOrders(mobileNo);
 			model.put("serviceCenterOrders", serviceCenterOrders);
 			
-			List<CustomerBill> serviceCenterOrderHistory = customerDao.getCustomerOrderHistory(mobileNo);
+			List<CustomerBill> serviceCenterOrderHistory = customerDao.getServiceCenterOrderHistory(mobileNo);
 			model.put("serviceCenterOrderHistory", serviceCenterOrderHistory);
 			
 			return "account-service-center";
