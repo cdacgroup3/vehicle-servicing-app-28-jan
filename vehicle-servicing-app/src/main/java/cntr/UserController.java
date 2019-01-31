@@ -1,6 +1,8 @@
 package cntr;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,15 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
@@ -36,12 +42,13 @@ public class UserController {
 	@Autowired
 	private CustomerDao customerDao;
 	
-	String referrer;
+	String referrer, referrer2;
 	
 	@RequestMapping(value="/home.htm")
 	public String selectCarModel(ModelMap model, HttpServletRequest request, HttpSession session) {	
 		if(session.getAttribute("admin")!=null) {
 			model.put("revenue", customerDao.showServiceCenterRevenue());
+			model.put("dao", customerDao);
 		} 
 		model.put("customerCar", new CustomerCar());
 		return "index";
@@ -56,7 +63,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login-check.htm")
-	public String login(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public String login(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) {
 		if(customer.getCustomerName().equals("admin") && customer.getPassword().equals("carkey91")) {	
 			session = request.getSession();
 			session.setAttribute("admin", customer);
@@ -70,33 +77,52 @@ public class UserController {
 			if(list.isEmpty()) {
 				model.put("customer", new Customer());
 				model.put("serviceCenter", new ServiceCenter());
-				return "login-form";
+				//return "login-form";
+				redirectAttributes.addFlashAttribute("login-status", "Invalid username/password");
+				return "redirect:/login.htm";
 			} else {
 				session = request.getSession();
-				session.setAttribute("customer", customer);		
-				try {
-					response.sendRedirect(referrer);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}		
-				return null;
+				session.setAttribute("customer", customer);
+				
+				String checkUrl = request.getScheme() + "://" + request.getHeader("host") + request.getContextPath() + "/book-service.htm";
+				if(referrer2!=null && referrer2.equals(checkUrl)) {
+					try {
+						response.sendRedirect(referrer2);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else if(referrer!=null && referrer.equals(checkUrl)) {
+					try {
+						response.sendRedirect(referrer);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}		
+				} else {
+					try {
+						response.sendRedirect(request.getContextPath() + "/home.htm");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}		
+				}
 			}
 		}		
 		return null;
 	}
 	
 	@RequestMapping(value="/center-login-check.htm")
-	public String serviceCenterLogin(ServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public String serviceCenterLogin(ServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) {
 		List<ServiceCenter> list = customerDao.loginServiceCenter(serviceCenter);
 		if(list.isEmpty()) {
 			model.put("customer", new Customer());
 			model.put("serviceCenter", new ServiceCenter());
-			return "login-form";
+			redirectAttributes.addFlashAttribute("login-status", "Invalid username/password");
+			return "redirect:/login.htm";
+			//return "login-form";
 		} else {
 			session = request.getSession();
 			session.setAttribute("serviceCenter", serviceCenter);		
 			try {
-				response.sendRedirect(referrer);
+				response.sendRedirect(request.getContextPath() + "/home.htm");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}		
@@ -118,28 +144,39 @@ public class UserController {
 	}		
 	
 	@RequestMapping(value="/registration.htm")
-	public String prepareRegistrationForm(ModelMap model) {
+	public String prepareRegistrationForm(ModelMap model, HttpServletRequest request, @ModelAttribute("register-status") String status) {
 		model.put("customer", new Customer());
 		model.put("serviceCenter", new WaitlistedServiceCenter());
+		if(status != null) {
+			model.put("register-status", status);
+		}
+		String checkUrl = request.getScheme() + "://" + request.getHeader("host") + request.getContextPath() + "/book-service.htm";
+		if(referrer.equals(checkUrl)) {
+			referrer2 = referrer;
+		} else {
+			referrer2 = null;
+		}
 		return "registration-form";
 	}
 	
 	@RequestMapping(value="/performRegistration.htm")
-	public String performRegistration(Customer customer, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		customerDao.createUser(customer);	
-		model.put("register-status", "Your registration was successful!");		
-		model.put("customer", new Customer());
-		model.put("serviceCenter", new WaitlistedServiceCenter());
-		return "registration-form";
+	public String performRegistration(Customer customer, RedirectAttributes redirectAttributes) {
+		customerDao.createUser(customer);
+		redirectAttributes.addFlashAttribute("register-status", "Your registration was successful!");
+		return "redirect:/registration.htm";
 	}
 	
 	@RequestMapping(value="/performServiceCenterRegistration.htm")
-	public String performServiceCenterRegistration(WaitlistedServiceCenter serviceCenter, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public String performServiceCenterRegistration(WaitlistedServiceCenter serviceCenter, RedirectAttributes redirectAttributes) {
 		customerDao.createServiceCenter(serviceCenter);
-		model.put("register-status", "Your registration was successful!");
-		model.put("customer", new Customer());
-		model.put("serviceCenter", new WaitlistedServiceCenter());
-		return "registration-form";
+		redirectAttributes.addFlashAttribute("register-status", "Your registration was successful!");
+		return "redirect:/registration.htm";
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public String handleIntegrityViolation(RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("register-status", "This mobile no is already registered!");
+	    return "redirect:/registration.htm";
 	}
 	
 	
@@ -223,41 +260,69 @@ public class UserController {
 	
 	@RequestMapping(value="/pick-service-center.htm")
 	public String selectServiceCenter(ModelMap model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		session = request.getSession();
-		Customer customer = (Customer) session.getAttribute("customer");
-		List<ServiceCenter> serviceCenters = customerDao.showServiceCenterByZip(customer);
-		model.put("serviceCenters", serviceCenters);
-		//model.put("customerBill", session.getAttribute("customerBill"));
-		
+		if(session.getAttribute("customer") != null) {
+			Customer customer = (Customer) session.getAttribute("customer");
+			List<ServiceCenter> serviceCenters = customerDao.showServiceCenterByZip(customer);
+			if(!(serviceCenters.isEmpty())) {
+				model.put("serviceCenters", serviceCenters);
+			}						
+			model.put("serviceCenterPicked", new ServiceCenter());
+			return "pick-service-center";
+		} else {
+			try {
+				response.sendRedirect(request.getContextPath() + "/home.htm");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/service-center-by-zip-table.htm")
+	public String getServiceCenterByAltZipcode(HttpSession session, HttpServletRequest request, ModelMap model) {
+		Integer zip = Integer.parseInt(request.getParameter("alt-zip-code"));
+		List<ServiceCenter> serviceCenters = customerDao.showServiceCenterByAltZip(zip);
+		if(!(serviceCenters.isEmpty())) {
+			model.put("serviceCenters", serviceCenters);
+		}
 		model.put("serviceCenterPicked", new ServiceCenter());
-		
-		System.out.println("before pick " + session.getAttribute("customerBill"));
 		return "pick-service-center";
 	}
 	
 	@RequestMapping(value="/confirm-order.htm")
-	public String confirmOrder(ServiceCenter serviceCenter, HttpSession session) {		
-		CustomerBill customerBill = (CustomerBill)session.getAttribute("customerBill");
-		
-		Long serviceCenterMobileNo = serviceCenter.getMobileNo();
-		List<ServiceCenter> serviceCenters = customerDao.showServiceCenterByMobileNo(serviceCenterMobileNo);
-		ServiceCenter sc = serviceCenters.get(0);
-		
-		String customerName = ((Customer)session.getAttribute("customer")).getCustomerName();
-		List<Customer> customers = customerDao.showCustomerByName(customerName);
-		Customer c = customers.get(0);
+	public String confirmOrder(ServiceCenter serviceCenter, HttpSession session, HttpServletRequest request, HttpServletResponse response) {		
+		if(session.getAttribute("customer") != null) {
+			CustomerBill customerBill = (CustomerBill)session.getAttribute("customerBill");
 			
-		customerBill.setCustomer(c);	
-		customerBill.setServiceCenter(sc);		
-		
-		session.setAttribute("customerBill", customerBill);
-		System.out.println("after pick " + customerBill);
-		customerDao.createBill(customerBill);
-		return "confirm-order";
+			Long serviceCenterMobileNo = serviceCenter.getMobileNo();
+			List<ServiceCenter> serviceCenters = customerDao.showServiceCenterByMobileNo(serviceCenterMobileNo);
+			ServiceCenter sc = serviceCenters.get(0);
+			
+			String customerName = ((Customer)session.getAttribute("customer")).getCustomerName();
+			List<Customer> customers = customerDao.showCustomerByName(customerName);
+			Customer c = customers.get(0);
+				
+			customerBill.setCustomer(c);	
+			customerBill.setServiceCenter(sc);	
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy h:mm a");  
+			LocalDateTime now = LocalDateTime.now(); 
+			customerBill.setDate(dtf.format(now).toString());
+			
+			session.setAttribute("customerBill", customerBill);
+			customerDao.createBill(customerBill);
+			return "confirm-order";
+		} else {
+			try {
+				response.sendRedirect(request.getContextPath() + "/home.htm");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	@RequestMapping(value="/account.htm")
-	public String getCustomerOrders(ModelMap model, HttpSession session) {
+	public String getCustomerOrders(ModelMap model, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		if(session.getAttribute("customer")!=null) {
 			String customerName = ((Customer) session.getAttribute("customer")).getCustomerName();
 			List<Customer> customers = customerDao.showCustomerByName(customerName);
@@ -285,6 +350,12 @@ public class UserController {
 			model.put("serviceCenterOrderHistory", serviceCenterOrderHistory);
 			
 			return "account-service-center";
+		} else {
+			try {
+				response.sendRedirect(request.getContextPath() + "/home.htm");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -320,10 +391,19 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/pending-center.htm")
-	public String getPendingCenters(ModelMap model) {
-		List<WaitlistedServiceCenter> serviceCenters = customerDao.showPendingServiceCenter();
-		model.put("waitlisted", serviceCenters);
-		return "account-admin-pending-center";
+	public String getPendingCenters(ModelMap model, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+		if(session.getAttribute("admin") != null) {
+			List<WaitlistedServiceCenter> serviceCenters = customerDao.showPendingServiceCenter();
+			model.put("waitlisted", serviceCenters);
+			return "account-admin-pending-center";
+		} else {
+			try {
+				response.sendRedirect(request.getContextPath() + "/home.htm");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	@RequestMapping(value="/approve-center.htm")

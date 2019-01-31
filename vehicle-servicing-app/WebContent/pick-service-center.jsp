@@ -13,72 +13,37 @@
 <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="assets/css/styles.css">
 <style>
-	span {
+	#pick-center-form span {
 		display: block;
 	}
-  /* .funkyradio label {
-    width: 50%;
-    border-radius: 3px;
-    border: 2px solid #D1D3D4;
-    font-weight: normal;
-  }  
-  .funkyradio input[type="radio"]:empty
-  {
-    display: none;
-  }  
-  .funkyradio input[type="radio"]:empty ~ label
-  {
-    position: relative;
-    line-height: 2.5em;
-    text-indent: 3em;
-    margin-top: 1em;
-    cursor: pointer;
-  } 
-  .funkyradio input[type="radio"]:empty ~ label:before
-  {
-    position: absolute;
-    display: block;
-    height: 3em;
-    content: '';
-    width: 3em;
-    background: #D1D3D4;
-    border-radius: 3px 0 0 3px;
-  }
-  .funkyradio input[type="radio"]:checked ~ label:before,
-  .funkyradio input[type="checkbox"]:checked ~ label:before {
-    content: '\2714';
-    text-indent: .9em;
-    color: #333;
-    background-color: #ccc;
-  }
-  .funkyradio-success input[type="radio"]:checked ~ label:before,
-  .funkyradio-success input[type="checkbox"]:checked ~ label:before {
-    color: #fff;
-    background-color: #5cb85c;
-  } */
-  	input[type="radio"]{
+  	#pick-center-form input[type="radio"]{
 	  display: none;
 	}
-	label { cursor: pointer; }
-  	label:before {
+	#pick-center-form label { cursor: pointer; }
+  	#pick-center-form label:before {
 	  	content: '';
   	    width: 35px;
 	    height: 35px;
-	    padding: 0 6px 0 8px;
+	    padding: 0 0 0 7px;
+	    border: 3px solid green;
 	    border-radius: 50%;
 	    display: inline-block;
 	    position: absolute;
-	    background-color: #28a745;
+	    background: transparent;
 	    cursor: pointer;
 	}
-	input[type="radio"]:checked+label:before {
+	#pick-center-form input[type="radio"]:checked+label:before {
 	  	content: '\2713';
-	    background-color: #01704f;
+	    background: green;
 	    color: white;
-	    font-size: 24px;
+	    font-size: 20px;
 	    font-weight: bold;
 	}
-	h4 {
+	h4 .error-icon {
+		font-size: 45px;
+		vertical-align: -6px;
+	}
+	#pick-center-form h4 {
 		padding-top: 3px;
 		margin: 0 0 -3px 45px;
 	}
@@ -92,8 +57,11 @@
 		<div class="row">
 			<div class="col-3"></div>
 			<div class="col-6">
+				<% 
+				if(request.getAttribute("serviceCenters") != null) {
+				%>
 				<h3 class="my-4">PICK SERVICE CENTER</h3>
-				<spr:form action="confirm-order.htm" commandName="serviceCenterPicked">
+				<spr:form action="confirm-order.htm" commandName="serviceCenterPicked" id="pick-center-form">
 					<%
 						List<ServiceCenter> serviceCenters = (List<ServiceCenter>) request.getAttribute("serviceCenters");
 						Iterator<ServiceCenter> it = serviceCenters.iterator();
@@ -102,7 +70,7 @@
 					%>
 					<div class="card mb-4">		
 						<div class="card-header">
-							<spr:radiobutton path="mobileNo" value="<%= sc.getMobileNo() %>" id="<%= String.valueOf(sc.getMobileNo()) %>" />
+							<spr:radiobutton path="mobileNo" value="<%= sc.getMobileNo() %>" id="<%= String.valueOf(sc.getMobileNo()) %>" required="required" />
 						    <label for="<%= String.valueOf(sc.getMobileNo()) %>">
 						    	 <h4><%= sc.getServiceCenterName() %></h4>
 						    </label>
@@ -119,9 +87,20 @@
 						<button type="submit" class="btn btn-lg btn-success">CONFIRM BOOKING</button>
 					</div>
 				</spr:form>
+				<% } else { %>
+					<h4 class="mt-5 text-danger"><span class="error-icon">&#x26A0;</span> We don't have any service centers for your zipcode.</h4>
+				<% } %>
+				
+				<div class="mt-5">
+					<h5>Currently in a different location?</h5>
+					<form class="col-6 form-inline" action="service-center-by-zip-table.htm">						
+						<label for="alt-zip-code" class="col-sm-2 col-form-label">Zip code: </label>
+						<input class="form-control" type="text" id="alt-zip-code" name="alt-zip-code">
+						<button type="submit" class="btn btn-success mt-3" id="find-alt-center">Submit</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
-	
 </body>
 </html>

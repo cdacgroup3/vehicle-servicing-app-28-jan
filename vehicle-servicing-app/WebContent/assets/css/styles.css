@@ -120,7 +120,8 @@ header .navbar {
 	max-width: 480px;
 }
 
-.how-it-works {
+.how-it-works,
+#contact-us {
 	background: #d6f7d1;
 }
 
@@ -137,6 +138,10 @@ header .navbar {
     text-align: center;
 }
 
+#contact-us span {
+	width: 100%;
+	display: block;
+}
 
 .select-service-page .main { position: relative; }
 

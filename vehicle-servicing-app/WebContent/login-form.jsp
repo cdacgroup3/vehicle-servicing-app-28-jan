@@ -63,6 +63,14 @@
 			<div class="col-4"></div>
 
 			<div class="col-4 login-form">
+				<%
+					if(request.getAttribute("login-status") != null) {
+				%>
+						<h6 class="text-center text-success mb-3 login-msg"><%= request.getAttribute("login-status") %></h6>
+				<% 
+					}
+				%>
+			
 				<h2 class="text-center">LOGIN</h2>
 				
 				<!-- User Login Form -->
@@ -190,6 +198,12 @@
 				$(this).addClass('active');
 			});
 		});
+
+		if(!($('.login-msg').is(':empty'))) {
+			setTimeout(function(){
+				$('.login-msg').empty();
+			}, 3000);
+		}
 		
 	</script>
 </body>

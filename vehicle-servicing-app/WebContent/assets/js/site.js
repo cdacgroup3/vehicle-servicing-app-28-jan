@@ -60,6 +60,7 @@ $(document).ready(function() {
 		$(this).prop("disabled", true);
 		$(this).next().removeClass("d-none");
 		$(".service-list").append(newChild);	
+		$("#checkout-login").next('span').remove();
 		
 		marketsum += parseInt(marketPrice);
 		$(".service-total-calc").find("#market-price del")[0].innerHTML = "Rs. " + marketsum;

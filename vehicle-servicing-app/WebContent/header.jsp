@@ -29,7 +29,7 @@
 							<a class="nav-link h5" href="home.htm#brands">Brands</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link h5" href="">Contact Us</a>
+							<a class="nav-link h5" href="home.htm#contact-us">Contact Us</a>
 						</li>
 						<%  if(session.getAttribute("customer")!=null || session.getAttribute("serviceCenter")!=null) { %>
 						<li class="nav-item">

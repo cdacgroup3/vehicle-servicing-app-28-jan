@@ -59,6 +59,11 @@
 	#checkout-login:hover {
 		background-image: linear-gradient(to left top, #01704f, #007e50, #008c4f, #12994b, #28a745);
 	}
+	#checkout-login+span {
+		position: absolute;
+	    left: 115px;
+	    color: red;
+	}
 </style>
 </head>
 <body>
@@ -183,7 +188,7 @@
 					<span><span class="font-weight-bold">Vehicle:</span> ${customerCar.carBrand}</span>
 				</div>
 
-				<spr:form action="checkout-login.htm" method="post" commandName="customerBill">
+				<spr:form action="checkout-login.htm" method="post" commandName="customerBill" id="checkout-form">
 					<div class="service-list">
 						<div class="service-item row" id="service-item-dummy">
 							<span class="service-item-name col-9"></span> 
@@ -279,6 +284,18 @@
 				    }
 				});
 			}
+
+			$("#checkout-login").on('click', function(e) {
+				e.preventDefault();
+				if($('.service-item').length<=1) {
+					if($(this).next('span').length == 0) {
+						$(this).after('<span>No services selected</span>');
+					}
+				} else {
+					$(this).next('span').remove();
+					$("#checkout-form").submit();
+				}
+			});
 		});
 	</script>
 </body>

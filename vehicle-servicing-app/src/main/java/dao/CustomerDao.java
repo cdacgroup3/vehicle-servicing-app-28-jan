@@ -9,12 +9,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.mail.internet.MimeMessage;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -43,6 +48,12 @@ public class CustomerDao {
 		this.hibernateTemplate = hibernateTemplate;
 	}
 	
+	static String emailToRecipient, emailSubject, emailMessage;
+	static final String emailFromRecipient = "carfix.cdac@gmail.com";
+	
+	@Autowired
+	private JavaMailSender mailSenderObj;
+	
 	public HashMap<String, List<String>> getCarBrandModel() {
 		HashMap<String, List<String>> list = hibernateTemplate.execute(new HibernateCallback<HashMap<String, List<String>>>() {
 			public HashMap<String, List<String>> doInHibernate(Session session) throws HibernateException {
@@ -68,17 +79,44 @@ public class CustomerDao {
 		return list;
 	}
 	
+	public void sendEmail(String recieverEmail){
+		// Reading Email Form Input Parameters		
+		emailSubject = "Successfully registered on CarFix site";
+		emailMessage = "Thank you for registration.\nFrom now, you can easily book your next car services!";
+		emailToRecipient = recieverEmail;
+
+		// Logging The Email Form Parameters For Debugging Purpose
+		System.out.println("\nReceipient?= " + emailToRecipient + ", Subject?= " + emailSubject + ", Message?= " + emailMessage + "\n");
+
+		mailSenderObj.send(new MimeMessagePreparator() {
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+
+				MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(mimeMessage, true, "UTF-8");				
+				mimeMsgHelperObj.setTo(emailToRecipient);
+				mimeMsgHelperObj.setFrom(emailFromRecipient);				
+				mimeMsgHelperObj.setText(emailMessage);
+				mimeMsgHelperObj.setSubject(emailSubject);
+			}
+		});
+		System.out.println("\nMessage Send Successfully.... Hurrey!\n");
+		
+	}
+	
 	public void createUser(final Customer customer) {
 		hibernateTemplate.execute(new HibernateCallback<List<Customer>>() {
 			public List<Customer> doInHibernate(Session session) throws HibernateException {
 				Transaction t = session.beginTransaction();
 				session.save(customer);
+				emailToRecipient=customer.getEmail();
+				System.out.println("Email id is : "+emailToRecipient);
 				t.commit();
 				session.flush();
 				session.close();
 				return null;
 			}
 		});
+		
+		//sendEmail(customer.getEmail());
 	}
 	
 	public void createServiceCenter(final WaitlistedServiceCenter serviceCenter) {
@@ -214,6 +252,23 @@ public class CustomerDao {
 		});
 		return list;
 	}	
+	
+	public List<ServiceCenter> showServiceCenterByAltZip(Integer customerZipcode) {
+		List<ServiceCenter> list = hibernateTemplate.execute(new HibernateCallback<List<ServiceCenter>>() {
+			public List<ServiceCenter> doInHibernate(Session session) throws HibernateException {
+				Transaction t = session.beginTransaction();
+				Query q = session.createQuery("from ServiceCenter where zipcode = ?");
+				q.setInteger(0, customerZipcode);
+				List<ServiceCenter> ul = q.list();
+				
+				t.commit();
+				session.flush();
+				session.close();
+				return ul;
+			}
+		});
+		return list;
+	}	
 
 	
 	public List<CustomerBill> getCustomerOrders(Long mobileNo) {
@@ -278,7 +333,6 @@ public class CustomerDao {
 				q.setLong(0, mobileNo);
 				q.setBoolean(1, true);
 				List<CustomerBill> ul = q.list();
-				
 				t.commit();
 				session.flush();
 				session.close();

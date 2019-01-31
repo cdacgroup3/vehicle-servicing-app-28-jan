@@ -164,6 +164,24 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="row mt-2 pb-5" id="contact-us">
+			<div class="col-12 mt-5 make-center">
+				<h2>CONTACT US</h2>
+			</div>
+			<div class="row col-12 mt-4">
+				<div class="col-2"></div>
+				<div class="col-10">
+					<h4 class="w-100">WHERE WE ARE</h4>
+					<h5 class="w-100 mt-4">REGISTERED OFFICE</h5>
+					<span>CarFix Technology Private Limited</span> 
+					<span>139, A1 CDAC Building, Kharghar (West)</span>
+					<span>Mumbai, Maharashtra - 400013</span>
+					
+					<h6 class="mt-3">&#128222; <a href="tel:9170712345">+9170712345</a></h6>
+				</div>				
+			</div>
+		</div>
 	</div>
 	<% } else { %>
 		<%@ include file="account-admin.jsp"%>

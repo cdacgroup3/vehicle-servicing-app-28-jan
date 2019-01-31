@@ -39,14 +39,15 @@
 		</div>
 		
 		<div class="row mt-4">
-			<div class="col-3"></div>
-			<div class="col-6">
+			<div class="col-2"></div>
+			<div class="col-8">
 				<div id="current-orders-section">
 					<h5>Current Orders</h5>
 					<table class="table table-striped table-bordered">
 						<thead>
 							<tr>
 								<th>BILL ID</th>
+								<th>DATE</th>
 								<th>SERVICES</th>
 								<th>TOTAL PRICE</th>
 							</tr>
@@ -60,6 +61,7 @@
 							%>
 							<tr>
 								<td><%= customerBill.getBillId() %></td>
+								<td><%= customerBill.getDate() %></td>
 								<td>
 									<ul>
 								<%
@@ -87,6 +89,7 @@
 						<thead>
 							<tr>
 								<th>BILL ID</th>
+								<th>DATE</th>
 								<th>SERVICES</th>
 								<th>TOTAL PRICE</th>
 							</tr>
@@ -100,6 +103,7 @@
 							%>
 							<tr>
 								<td><%= customerBill.getBillId() %></td> 
+								<td><%= customerBill.getDate() %></td>
 								<td>
 									<ul>
 								<%

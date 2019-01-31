@@ -46,13 +46,16 @@ public class CustomerBill {
 	
 	@Column(name = "is_paid", columnDefinition="boolean default false", nullable=false)
 	private boolean isPaid = false;
+	
+	@Column(name="date")
+	private String date;
 
 	public CustomerBill() {
 		super();
 	}
 
 	public CustomerBill(int billId, Customer customer, ServiceCenter serviceCenter, List<String> serviceName,
-			List<String> servicePrice, int marketPrice, int totalPrice, boolean isPaid) {
+			List<String> servicePrice, int marketPrice, int totalPrice, boolean isPaid, String date) {
 		super();
 		this.billId = billId;
 		this.customer = customer;
@@ -62,6 +65,7 @@ public class CustomerBill {
 		this.marketPrice = marketPrice;
 		this.totalPrice = totalPrice;
 		this.isPaid = isPaid;
+		this.date = date;
 	}
 
 	public int getBillId() {
@@ -128,13 +132,22 @@ public class CustomerBill {
 		this.isPaid = isPaid;
 	}
 
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
 	@Override
 	public String toString() {
 		return "CustomerBill [billId=" + billId + ", customer=" + customer + ", serviceCenter=" + serviceCenter
 				+ ", serviceName=" + serviceName + ", servicePrice=" + servicePrice + ", marketPrice=" + marketPrice
-				+ ", totalPrice=" + totalPrice + ", isPaid=" + isPaid + "]";
+				+ ", totalPrice=" + totalPrice + ", isPaid=" + isPaid + ", date=" + date + "]";
 	}
 
 	
-}
 
+	
+}

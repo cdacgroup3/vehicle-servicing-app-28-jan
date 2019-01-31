@@ -84,7 +84,7 @@ textarea.invalid {
 				<%
 					if(request.getAttribute("register-status") != null) {
 				%>
-						<h6 class="text-center text-success mb-3"><%= request.getAttribute("register-status") %></h6>
+						<h6 class="text-center text-success mb-3 register-msg"><%= request.getAttribute("register-status") %></h6>
 				<% 
 					}
 				%>					
@@ -200,7 +200,8 @@ textarea.invalid {
 				$('#customer-name').removeClass("valid").addClass("invalid");
 				flag = false;
 			}
-			var regex = /^[0-9]{10}$/;
+			
+			var regex = /^([987]{1})(\d{1})(\d{8})$/;
 			var is_mobile = regex.test($('#mobile-no').val());
 			if(is_mobile){
 				$('#mobile-no').removeClass("invalid").addClass("valid");
@@ -208,7 +209,7 @@ textarea.invalid {
 			}
 			else {
 				if($('#mobile-no').next('span').length == 0) {
-					$('#mobile-no').after('<span class="text-danger">Mobile no should be 10 digits!</span>');
+					$('#mobile-no').after('<span class="text-danger">Mobile no should be a valid 10 digit number!</span>');
 				}
 				$('#mobile-no').removeClass("valid").addClass("invalid");
 				flag = false;
@@ -287,7 +288,7 @@ textarea.invalid {
 				$('#center-name').removeClass("valid").addClass("invalid");
 				flag = false;
 			}
-			var regex = /^[0-9]{10}$/;
+			var regex = /^([987]{1})(\d{1})(\d{8})$/;
 			var is_mobile = regex.test($('#center-mobile-no').val());
 			if(is_mobile){
 				$('#center-mobile-no').removeClass("invalid").addClass("valid");
@@ -371,6 +372,17 @@ textarea.invalid {
 			$('#user-register-tab').removeClass('active');
 			$(this).addClass('active');
 		});
+
+		if(!($('.register-msg').is(':empty'))) {
+			setTimeout(function(){
+				if($('.register-msg').text()=="Your registration was successful!") {
+					$('.register-msg').empty();
+					window.location.href="../vehicle-servicing-app/login.htm";
+				}
+				$('.register-msg').empty();
+			}, 3000);
+		}
+		
 	});
 	</script>
 </body>
